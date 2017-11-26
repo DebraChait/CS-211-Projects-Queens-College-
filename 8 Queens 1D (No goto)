@@ -1,0 +1,50 @@
+//Prints all possible ways of placing 8 queens on an 8x8 chessboard, where no queens threatens another queen
+//Representation is a 1D array. Uses functions instead of goto statements.
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+bool good_row(int q[], int c){ //Checks if permissible to place queen
+    if (q[c]<0) return false;
+    for (int i=0; i<c; i++) //Row and diagonal test
+        if (q[i]==q[c]||(c-i)==abs(q[c]-q[i])) return false;
+    return true;
+}
+
+void backtrack(int q[], int &c){ //Moves to last column, re-places queen
+    --c;
+    if (c==-1) return;
+    ++q[c];
+    while (!good_row(q,c)) q[c]++;
+    if (q[c]>7) backtrack(q,c);
+}
+
+void print(int q[]){ //'0' indicates empty space, '1' indicates queen
+    for (int r=0; r<8; r++){
+        for (int c=0; c<8; c++){
+            if (q[c]==r) cout << 1;
+            else cout << 0;
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+int main(){
+    int q[8], c=0; //'c' keeps track of column, q[c] gives row placement of queen in column c
+    q[0]=0; //Place first queen on column 0, row 0
+    while(c<=8){ //While still on the board
+        ++c; //Go to next column
+        if(c==8){ //If we've reached 'column 8', placed queens on all columns (0-7), so found a solution
+            print(q);
+            backtrack(q,c); //Backtrack to find more solutions
+        }
+        else{ //Otherwise, still on board
+            q[c]=-1; //Initialize row 
+            while(!good_row(q,c)) q[c]++; //Go to next row until permissible to place queen
+            if (q[c]>7) backtrack(q,c); //If off the board, backtrack
+        }
+        if (c<0) return 0; //Backtracked past column 0, found all possible solutions, so exit program
+    }
+}
