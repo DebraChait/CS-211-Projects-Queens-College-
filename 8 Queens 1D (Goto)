@@ -1,0 +1,39 @@
+//Prints all possible ways of placing 8 queens on an 8x8 chessboard, where no queen threatens another queen
+//1D array representation, using goto
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+void print(int q[]){ //Empty space indicated by '0', queen indicated by '1'
+    for (int r=0; r<8; r++){
+        for (int c=0; c<8; c++){
+            if (q[c]==r) cout << 1;
+            else cout << 0;
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+int main(){
+    int q[8], c=0; //c keeps track of column, q[c] stores row of queen placed in column c
+    q[0]=0; //Place first queen in column 0, row 0
+next_col:
+    ++c; //Move to next column
+    if (c==8) goto print; //If we've reached 'column 8', we've placed queens on all columns (0-7), so we've found a solution
+    q[c]=-1; //Initialize row for next_row section
+next_row:
+    ++ q[c]; //Move to next row
+    if (q[c]==8) goto backtrack; //If we've run out of rows to place for that column, something is wrong, so backtrack
+    for (int i=0; i<c; ++i) //Row test, diagonal test
+        if (q[i]==q[c]||(c-i)==abs(q[c]-q[i])) goto next_row;
+    goto next_col;
+backtrack:
+    --c; //Go to previous column
+    if (c==-1) return 0; //If we've backtracked to 'column -1', we've found all possible solutions, so exit program
+    goto next_row; //Re-place queen
+print:
+    print(q);
+    goto backtrack; //Go back for more solutions
+}
