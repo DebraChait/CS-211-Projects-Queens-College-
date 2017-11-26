@@ -1,3 +1,6 @@
+//Prints Fibonacci numbers through 70
+//F(n)=F(n-1)+F(n-2), F(1)=1, F(2)=1
+
 #include <iostream>
 using namespace std;
 
