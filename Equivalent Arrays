@@ -1,0 +1,36 @@
+//Determines whether two arrays are "shift equivalent": if one array can be shifted until it is identical to the other
+
+#include <iostream>
+using namespace std;
+
+bool equivalent(int a[], int b[], int n){ //n=capacity
+    int matchcount=0;
+    for (int c=0; c<n; c++)
+        //Check if they are already equivalent
+        if (a[c]==b[c]) matchcount++;
+    if (matchcount==n) return true;
+    //Shift until array gets back to original indices, check each time
+    for (int run=1; run<n; run++){
+        //Save rightmost element
+        int savelast=a[n-1];
+        for (int c=n-2;c>=0;c--){
+            //Shift the array elements to the right
+            a[c+1]=a[c];
+        }
+        a[0]=savelast;
+        matchcount=0;
+        for (int c=0; c<n; c++) if (a[c]==b[c]) matchcount++;
+        if (matchcount==n) return true;
+    }
+    return false;
+}
+
+int main(){
+    int a[5]={1,2,3,4,5}, b[5]={3,4,5,1,2};
+    if (equivalent(a,b,5)) cout << "Equivalent \n";
+    else cout << "Not equivalent \n";
+    int c[6]={1,2,3,4,5,6}, d[6]={2,2,3,4,5,6};
+    if (equivalent(c,d,6)) cout << "Equivalent \n";
+    else cout << "Not equivalent \n";
+    return 0;
+}
