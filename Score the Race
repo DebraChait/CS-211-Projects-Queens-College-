@@ -1,0 +1,64 @@
+//User inputs names of teams participating in a race in the order of how their members completed the race.
+//Each team name is an uppercase letter and has the same number of runners.
+//Example: ZZAZAA means two runners from team Z came in 1st and 2nd, one runner from team A came in 3rd, 
+//one runner from team Z came in 4th, two runners from team A came in 5th and 6th.
+//Program determines the number of teams, the number of runners per team, the names of teams in alphabetical order,
+//the score of each team (sum of runners' scores divided by number of runners on team), and name and score of winning team.
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+bool valid(string race){ //Checks for same number of runners per team
+    int teams[26]={0}, runners; //team A stored in teams[0], team B in teams[1], etc. runners stores number of runners on team.
+    for (int i=0; i<race.length(); i++) teams[race[i]-65]++;
+    for (int i=0; i<26; i++) if (teams[i]!=0) runners=teams[i];
+    for (int i=0; i<26; i++) if (teams[i]!=0 && teams[i]!=runners) return false;
+    return true;
+}
+
+string get_teams(string race){ //Gives list of teams, alphabetized
+    int teams[26];
+    for (int i=0; i<race.length(); i++) teams[race[i]-65]=1; //Checks if team for that letter ran in the race
+    string ans="";
+    for (int i=0; i<26; i++) if (teams[i]==1) ans+=(char)(i+65);
+    return ans;
+}
+
+double score(string race, char teams){
+    int runners=0;
+    double s=0;
+    for (int i=0; i<race.length(); i++) //Determines place of each runner on team
+        if (race[i]==teams){ //Goes through all runners in race, and if runner is on team, adds to team's score
+            s=s+i+1;
+            runners++;
+        }
+    return s/runners;
+}
+
+int main(){
+    string race;
+    cout << "Enter the results of the race: ";
+    cin >> race;
+    while (!valid(race)){
+        cout << "Enter the results of the race: ";
+        cin >> race;
+    }
+    string teams=get_teams(race);
+    cout << "There are " << teams.length() <<" teams. \n";
+    cout << "Each team has " << race.length()/teams.length() << " runners. \n";
+    cout << "Team\tScore" << endl << "----\t-----" << endl;
+    double min_score=score(race,(char)teams[0]);
+    int winner;
+    for (int i=0; i<teams.length(); i++){
+        double s=score(race,(char)teams[i]);
+        cout << teams[i] << "\t" << s << endl;
+        if (s<min_score){
+            min_score=s;
+            winner=i;
+        }
+    }
+    cout << "Winning team is " << teams[winner];
+    cout << " with a score of " << min_score << endl;
+    return 0;
+}
